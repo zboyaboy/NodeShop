@@ -7,5 +7,5 @@ app.use((ctx, next) => {
 })
 
 app.listen(APP_PORT, () => {
-    console.log('server is running on http://locahost:3000')
+    console.log('server is running on http://locahost:' + APP_PORT + '.')
 })
