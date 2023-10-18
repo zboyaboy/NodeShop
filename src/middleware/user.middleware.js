@@ -1,5 +1,5 @@
 const { getUserInfo } = require('../service/user.service')
-const { userFormateError, userAlreadyExisted } = require('../constant/error.type')
+const { userFormateError, userAlreadyExisted, userRegisterError } = require('../constant/error.type')
 
 const userValidator = async (ctx, next) => {
     const { username, password } = ctx.request.body
@@ -14,9 +14,14 @@ const userValidator = async (ctx, next) => {
 
 const veryfyUser = async (ctx, next) => {
     const { username } = ctx.request.body
-    if (getUserInfo({ username })) {
+    try {
+        const res = await getUserInfo({ username })
+        console.error('error:用户名已经存在', { username })
         ctx.app.emit('error', userAlreadyExisted, ctx)
         return
+    } catch (err) {
+        console.error('error:用户注册异常', err)
+        ctx.app.emit('error', userRegisterError, ctx)
     }
     await next();
 }
