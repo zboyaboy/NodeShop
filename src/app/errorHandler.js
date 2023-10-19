@@ -8,7 +8,7 @@ module.exports = (err, ctx) => {
             status = 409
             break
         case '10003':
-            status = 404
+            status = 409
             break
         default:
             status = 500
