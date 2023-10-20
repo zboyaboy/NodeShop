@@ -986,3 +986,290 @@ async updateById({ id, username, password, role }) {
     }
 ```
 
+# 十七、添加商品模块
+
+## 1、新建商品路由
+
+`./src/router/products.route.js`
+
+```js
+const Router = require('@koa/router')
+const { upload } = require('../controller/products.controller')
+
+const router = new Router({ prefix: '/products' })
+
+router.post('/upload', upload)
+```
+
+## 2、添加控制器
+
+`./src/router/products.controller.js`
+
+```js
+const { createUser, loginUser, getUserInfo, updateById } = require('../service/user.service');
+const { userRegisterError, changePasswordError } = require('../constant/error.type')
+
+class ProductsController {
+    async upload(ctx, next) {
+        ctx.body = '商品上传成功'
+    }
+}
+module.exports = new ProductsController()
+```
+
+## 3、引入路由
+
+`./src/router/products.route.js`
+
+```js
+const Router = require('@koa/router')
+const { upload } = require('../controller/products.controller')
+
+const router = new Router({ prefix: '/products' })
+
+router.post('/upload', upload)
+
+module.exports = router
+```
+
+
+
+`./src/app/index.js`
+
+```js
+const productsRouter = require('../router/products.route')
+
+app.use(koaBody())
+    .use(cors())
+    .use(userRouter.routes())
+    `.use(productsRouter.routes())`
+    .use(userRouter.allowedMethods());
+```
+
+## 4、自动加载路由文件
+
+`./src/router/index.js`
+
+```js
+const fs = require('fs')
+
+const Router = require('@koa/router')
+const router = new Router()
+
+fs.readdirSync(__dirname).forEach(file => {
+    if (file !== 'index.js') {
+        let r = require('./' + file)
+        router.use(r.routes())
+    }
+})
+
+module.exports = router
+```
+
+`./src/app/index.js`
+
+```js
+const router = require('../router')
+
+app.use(koaBody())
+    .use(cors())
+    .use(router.routes())
+    .use(router.allowedMethods());
+```
+
+## 5、判断用户是否具有管理员权限
+
+`./src/middleware/user.middleware.js`
+
+```js
+const hadAdminPermission = async (ctx, next) => {
+    const { role } = ctx.state.user
+    if (!role) {
+        console.error('该用户没有管理员权限')
+        return ctx.app.emit('error', hasAdminPermission, ctx)
+    }
+    await next();
+}
+
+module.exports = {
+    userValidator,
+    verifyUser,
+    cryptPassword,
+    verifyLogin,
+    auth,
+    hadAdminPermission
+}
+```
+
+`./src/constant/error.type.js`
+
+```js
+  hasAdminPermission: {
+        code: '10103',
+        message: '没有管理员权限',
+        resut: ''
+    }
+```
+
+`./src/router/products.route.js`
+
+```js
+const { auth, hadAdminPermission } = require('../middleware/user.middleware')
+
+router.post('/upload', auth, hadAdminPermission, upload)
+```
+
+## 6、分离auth中间件
+
+`./src/middleware/auth.middleware.js`
+
+```js
+const { tokenExpiredError, jsonWebTokenError, hasAdminPermission } = require('../constant/error.type')
+var jwt = require('jsonwebtoken');
+const { JWT_SECRET } = require('../config/config.default');
+
+const auth = async (ctx, next) => {
+    const { authorization } = ctx.request.header
+    const token = authorization.replace('Bearer ', '')
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        ctx.state.user = decoded
+    }
+    catch (err) {
+        switch (err.name) {
+            case 'TokenExpiredError':
+                console.error('token过期了', err)
+                return ctx.app.emit('error', tokenExpiredError, ctx)
+                break
+            case 'JsonWebTokenError':
+                console.error('无效的Token', err)
+                return ctx.app.emit('error', jsonWebTokenError, ctx)
+                break
+        }
+
+    }
+    await next();
+}
+
+const hadAdminPermission = async (ctx, next) => {
+    const { role } = ctx.state.user
+    if (!role) {
+        console.error('该用户没有管理员权限')
+        return ctx.app.emit('error', hasAdminPermission, ctx)
+    }
+    await next();
+}
+
+module.exports = {
+    auth,
+    hadAdminPermission
+}
+```
+
+`./src/router/user.router.js`
+
+```js
+const { auth } = require('../middleware/auth.middleware')
+```
+
+`./src/router/products.router.js`
+
+```js
+const { auth, hadAdminPermission } = require('../middleware/auth.middleware')
+```
+
+## 7、添加上传逻辑
+
+`./src/app/index.js`
+
+```js
+const path = require('path')
+
+app.use(koaBody({
+    multipart: true,
+    formidable: {//在option里的相对路径，不是相对当前的路径。是相对于Process.cwd()的相对路径        
+        uploadDir: path.join(__dirname, '../upload'),
+        keepExtensions: true
+    }
+}))
+    .use(cors())
+    .use(router.routes())
+    .use(router.allowedMethods());
+```
+
+
+
+`./src/controllor/products.controllor.js`
+
+```js
+const path = require('path')
+const { fileUploadError } = require('../constant/error.type')
+
+class ProductsController {
+    async upload(ctx, next) {
+        const { file } = ctx.request.files
+        console.log(file.filepath)
+        console.log(path.basename(file.filepath))
+        if (file) {
+            ctx.body = {
+                code: 0,
+                message: '商品图片上传成功',
+                result: {
+                    products_img: path.basename(file.filepath)
+                }
+            }
+        } else {
+            return ctx.app.emit('error', fileUploadError, ctx)
+        }
+    }
+}
+module.exports = new ProductsController()
+```
+
+`./src/constant/error.type.js`
+
+```js
+fileUploadError: {
+        code: '10201',
+        message: '商品图片上传失败',
+        result: ''
+    }
+```
+
+## 8、添加图片静态回显
+
+```shell
+npm i koa-static
+```
+
+`./src/app/index.js`
+
+```js
+const koaStatic = require('koa-static')
+
+app.use(koaStatic(path.join(__dirname, '../upload')))
+```
+
+## 9、上传文件类型过滤
+
+`./src/controllor/products.controllor.js`
+
+```js
+const { fileUploadError, unSupportedFileType } = require('../constant/error.type')
+
+const fileTypes = ['image/jpeg', 'image/png']
+            if (!fileTypes.includes(file.mimetype)) {
+                return ctx.app.emit('error', unSupportedFileType, ctx)
+            }
+```
+
+`./src/constant/error.type.js`
+
+```js
+unSupportedFileType: {
+        code: '10202',
+        message: '不支持的上传文件格式',
+        result: ''
+    }
+```
+

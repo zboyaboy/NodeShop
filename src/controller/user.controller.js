@@ -1,4 +1,4 @@
-const { createUser, loginUser, getUserInfo, updateById } = require('../service/user.service');
+const { createUser, getUserInfo, updateById } = require('../service/user.service');
 const { userRegisterError, changePasswordError } = require('../constant/error.type')
 var jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config/config.default');
@@ -35,7 +35,6 @@ class UserController {
         try {
             //返回结果对象中，剔除password字段
             const { password, ...res } = await getUserInfo({ username })
-            console.log(res)
             ctx.body = {
                 code: 0,
                 message: '用户登录成功',

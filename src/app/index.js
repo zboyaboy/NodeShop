@@ -1,17 +1,27 @@
+const path = require('path')
+
 const Koa = require('koa');
 const { koaBody } = require('koa-body')
 const cors = require('koa-cors');   // 解决跨域
-const userRouter = require('../router/user.route')
-const demoRouter = require('../router/demo.route')
+const koaStatic = require('koa-static')
+
 const app = new Koa();
 const ErrorHandler = require('./errorHandler')
 
-app.use(koaBody())
-    .use(cors())
-    .use(userRouter.routes())
-    .use(demoRouter.routes())
-    .use(userRouter.allowedMethods());
+const router = require('../router')
+
+app.use(koaBody({
+    multipart: true,
+    formidable: {//在option里的相对路径，不是相对当前的路径。是相对于Process.cwd()的相对路径        
+        uploadDir: path.join(__dirname, '../upload'),
+        keepExtensions: true
+    }
+}))
+app.use(koaStatic(path.join(__dirname, '../upload')))
+app.use(cors())
+    .use(router.routes())
+    .use(router.allowedMethods());
 
 app.on('error', ErrorHandler)
 
-module.exports = app;
+module.exports = app; 
