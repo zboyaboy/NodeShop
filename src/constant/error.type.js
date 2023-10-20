@@ -29,4 +29,19 @@ module.exports = {
         message: '用户密码错误',
         result: ''
     },
+    changePasswordError: {
+        code: '10007',
+        message: '用户密码修改错误',
+        result: ''
+    },
+    tokenExpiredError: {
+        code: '10101',
+        message: 'token超时',
+        result: ''
+    },
+    jsonWebTokenError: {
+        code: '10102',
+        message: '无效的Token',
+        result: ''
+    }
 }

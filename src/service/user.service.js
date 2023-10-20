@@ -26,5 +26,17 @@ class UserService {
         //写入数据库操作
         return '登录成功'
     }
+    async updateById({ id, username, password, role }) {
+        const whereOpt = { id }
+        const newUser = {}
+        username && Object.assign(newUser, { username })
+        password && Object.assign(newUser, { password })
+        role && Object.assign(newUser, { role })
+
+        // 创建一个新用户
+        const res = await User.update(newUser, { where: whereOpt })
+        console.log(res.dataValues)
+        return res[0] > 0 ? true : false
+    }
 }
 module.exports = new UserService()

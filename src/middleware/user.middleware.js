@@ -1,6 +1,9 @@
 const { getUserInfo } = require('../service/user.service')
-const { userFormateError, userAlreadyExisted, userRegisterError, userLoginError, invalidPasswordError } = require('../constant/error.type')
+const { userFormateError, userAlreadyExisted, userRegisterError, userLoginError, invalidPasswordError, tokenExpiredError, jsonWebTokenError } = require('../constant/error.type')
 const bcrypt = require('bcryptjs');
+
+var jwt = require('jsonwebtoken');
+const { JWT_SECRET } = require('../config/config.default');
 
 const userValidator = async (ctx, next) => {
     const { username, password } = ctx.request.body
@@ -64,9 +67,32 @@ const verifyLogin = async (ctx, next) => {
     await next();
 }
 
+const auth = async (ctx, next) => {
+    const { authorization } = ctx.request.header
+    const token = authorization.replace('Bearer ', '')
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        ctx.state.user = decoded
+    }
+    catch (err) {
+        switch (err.name) {
+            case 'TokenExpiredError':
+                console.error('token过期了', err)
+                return ctx.app.emit('error', tokenExpiredError, ctx)
+                break
+            case 'JsonWebTokenError':
+                console.error('无效的Token', err)
+                return ctx.app.emit('error', jsonWebTokenError, ctx)
+                break
+        }
+
+    }
+    await next();
+}
 module.exports = {
     userValidator,
     verifyUser,
     cryptPassword,
-    verifyLogin
+    verifyLogin,
+    auth
 }
