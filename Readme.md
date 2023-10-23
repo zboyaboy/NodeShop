@@ -1529,3 +1529,133 @@ async removeProducts(id) {
     }
 ```
 
+# 22、标记删除商品信息
+
+## 1、添加路由
+
+`./src/router/products.router.js`
+
+```js
+//标记删除接口
+router.post('/:id/off', auth, hadAdminPermission, paranoid)
+
+//标记恢复删除接口
+router.post('/:id/on', auth, hadAdminPermission, unparanoid)
+```
+
+## 2、控制层
+
+`./src/controller/products.controller.js`
+
+```js
+async paranoid(ctx) {
+        const res = await paranoidProducts(ctx.params.id)
+        if (res) {
+            ctx.body = {
+                code: 0,
+                message: '下架商品成功',
+                result: ''
+            }
+        }
+        else {
+            return ctx.app.emit('error', invalidProductsIDError, ctx)
+        }
+    }
+    async unparanoid(ctx) {
+        const res = await unparanoidProducts(ctx.params.id)
+        if (res) {
+            ctx.body = {
+                code: 0,
+                message: '上架商品成功',
+                result: ''
+            }
+        }
+        else {
+            return ctx.app.emit('error', invalidProductsIDError, ctx)
+        }
+    }
+```
+
+## 3、服务层
+
+`./src/service/products.service.js`
+
+```js
+async paranoidProducts(id) {
+        const res = await Products.destroy({ where: { id } })
+        console.log(res)
+        return res > 0 ? true : false
+    }
+    async unparanoidProducts(id) {
+        const res = await Products.restore({ where: { id } })
+        console.log(res)
+        return res > 0 ? true : false
+    }
+```
+
+# 23、获取商品列表信息
+
+## 1、添加路由
+
+`./src/router/products.router.js`
+
+```js
+//获取商品列表接口
+router.get('/', findAll)
+```
+
+## 2、控制层
+
+`./src/controller/products.controller.js`
+
+```js
+    async findAll(ctx) {
+        //解析PageNum和PageSize
+        const { PageNum = 1, PageSize = 10 } = ctx.request.query
+        //调用数据处理的相关方法
+        const res = await findProducts(PageNum, PageSize)
+        //返回结果
+        ctx.body = {
+            code: 0,
+            message: '获取商品列表成功',
+            result: res
+        }
+    }
+```
+
+## 3、服务层
+
+`./src/service/products.service.js`
+
+```js
+    async findProducts(PageNum, PageSize) {
+        //获取商品总数
+        const count = await Products.count()
+        //获取分页的具体数据
+        const offset = (PageNum - 1) * PageSize
+        const rows = await Products.findAll({ offset: offset, limit: PageSize * 1 })
+        return rows
+    }
+```
+
+## 4、服务层代码优化
+
+```js
+    async findProducts(PageNum, PageSize) {
+        // //获取商品总数
+        // const count = await Products.count()
+        // //获取分页的具体数据
+        // const offset = (PageNum - 1) * PageSize
+        // const rows = await Products.findAll({ offset: offset, limit: PageSize * 1 })
+
+        const offset = (PageNum - 1) * PageSize
+        const { count, rows } = await Products.findAndCountAll({ offset: offset, limit: PageSize * 1 })
+        return {
+            PageNum,
+            PageSize,
+            total: count,
+            result: rows
+        }
+    }
+```
+

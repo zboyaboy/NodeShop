@@ -1,6 +1,6 @@
 const path = require('path')
 const { publicProductsError, invalidProductsIDError } = require('../constant/error.type')
-const { createProducts, updateProducts, removeProducts } = require('../service/products.service')
+const { createProducts, updateProducts, removeProducts, paranoidProducts, unparanoidProducts, findProducts } = require('../service/products.service')
 
 class ProductsController {
     async upload(ctx, next) {
@@ -64,6 +64,45 @@ class ProductsController {
             code: 0,
             message: '删除商品成功',
             result: ''
+        }
+    }
+    async paranoid(ctx) {
+        const res = await paranoidProducts(ctx.params.id)
+        if (res) {
+            ctx.body = {
+                code: 0,
+                message: '下架商品成功',
+                result: ''
+            }
+        }
+        else {
+            return ctx.app.emit('error', invalidProductsIDError, ctx)
+        }
+    }
+    async unparanoid(ctx) {
+        const res = await unparanoidProducts(ctx.params.id)
+        if (res) {
+            ctx.body = {
+                code: 0,
+                message: '上架商品成功',
+                result: ''
+            }
+        }
+        else {
+            return ctx.app.emit('error', invalidProductsIDError, ctx)
+        }
+    }
+
+    async findAll(ctx) {
+        //解析PageNum和PageSize
+        const { PageNum = 1, PageSize = 10 } = ctx.request.query
+        //调用数据处理的相关方法
+        const res = await findProducts(PageNum, PageSize)
+        //返回结果
+        ctx.body = {
+            code: 0,
+            message: '获取商品列表成功',
+            result: res
         }
     }
 }

@@ -1,3 +1,4 @@
+const { off } = require('../app');
 const Products = require('../model/products.model')
 
 class ProductsService {
@@ -18,19 +19,31 @@ class ProductsService {
         const res = await Products.destroy({ where: { id } })
         return res[0] > 0 ? true : false
     }
-    async getUserInfo({ id, username, password, role }) {
-        const whereOpt = {}
-        id && Object.assign(whereOpt, { id })
-        username && Object.assign(whereOpt, { username })
-        password && Object.assign(whereOpt, { password })
-        role && Object.assign(whereOpt, { role })
+    async paranoidProducts(id) {
+        const res = await Products.destroy({ where: { id } })
+        console.log(res)
+        return res > 0 ? true : false
+    }
+    async unparanoidProducts(id) {
+        const res = await Products.restore({ where: { id } })
+        console.log(res)
+        return res > 0 ? true : false
+    }
+    async findProducts(PageNum, PageSize) {
+        // //获取商品总数
+        // const count = await Products.count()
+        // //获取分页的具体数据
+        // const offset = (PageNum - 1) * PageSize
+        // const rows = await Products.findAll({ offset: offset, limit: PageSize * 1 })
 
-        const res = await User.findOne({
-            attributes: ['id', 'username', 'password', 'role'],
-            where: whereOpt
-        })
-
-        return res ? res.dataValues : null
+        const offset = (PageNum - 1) * PageSize
+        const { count, rows } = await Products.findAndCountAll({ offset: offset, limit: PageSize * 1 })
+        return {
+            PageNum,
+            PageSize,
+            total: count,
+            result: rows
+        }
     }
 }
 module.exports = new ProductsService()

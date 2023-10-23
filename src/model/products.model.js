@@ -22,8 +22,10 @@ const Products = seq.define('products', {
         allowNull: false,
         commit: '商品图片的URL地址'
     }
+}, {
+    paranoid: true
 })
 
-Products.sync({ force: true })
+// Products.sync({ force: true })
 
 module.exports = Products
