@@ -25,4 +25,5 @@ const User = seq.define('user', {
 })
 //强制同步数据库
 //User.sync({ force: true })
+
 module.exports = User

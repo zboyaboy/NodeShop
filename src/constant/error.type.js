@@ -58,5 +58,26 @@ module.exports = {
         code: '10202',
         message: '不支持的上传文件格式',
         result: ''
+    },
+    productsFormatError: {
+        code: '10203',
+        messsage: '商品参数错误',
+        result: ''
+    },
+    publicProductsError: {
+        code: '10204',
+        message: '发布商品错误',
+        result: ''
+    }
+    ,
+    updateProductsError: {
+        code: '10205',
+        message: '更新商品错误',
+        result: ''
+    },
+    invalidProductsIDError: {
+        code: '10206',
+        message: '无效的商品ID',
+        result: ''
     }
 }

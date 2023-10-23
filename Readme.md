@@ -1273,3 +1273,259 @@ unSupportedFileType: {
     }
 ```
 
+# 十八、校验中间件
+
+## 1、安装
+
+```shell
+npm install koa-parameter
+```
+
+## 2、引用组件
+
+`./src/app/index.js`
+
+```js
+const parameter = require('koa-parameter');
+
+app.use(parameter(app))
+```
+
+## 3、调用验证
+
+`./src/middleware/products.middleware.js`
+
+```js
+const { productsFormatError } = require('../constant/error.type')
+
+const validator = async (ctx, next) => {
+    try {
+        ctx.verifyParams({
+            products_name: { type: 'string', required: true },
+            products_price: { type: 'number', required: true },
+            products_num: { type: 'number', required: true },
+            products_img: { type: 'string', requited: true }
+        })
+    } catch (error) {
+        console.error(error)
+        productsFormatError.result = error
+        return ctx.app.emit('error', productsFormatError, ctx)
+    }
+    await next()
+}
+
+module.exports = { validator }
+```
+
+`./src/constant/error.type`
+
+```js
+    productsFormatError: {
+        code: '10203',
+        messsage: '商品参数错误',
+        result: ''
+    }
+```
+
+# 十九、发布商品信息
+
+## 1、路由中间件
+
+`./src/router/products.router.js`
+
+```js
+router.post('/', auth, hadAdminPermission, validator, create)
+```
+
+## 2、实现控制器create函数
+
+`./src/controller/products.controller.js`
+
+```js
+const { createProducts } = require('../service/products.service')
+async create(ctx) {
+        try {
+            const { createdAt, updatedAt, ...res } = await createProducts(ctx.request.body)
+            ctx.body = {
+                code: 0,
+                message: '发布商品成功',
+                result: res,
+            }
+        }
+        catch (error) {
+            console.error(error)
+            return ctx.app.emit('error', publicProductsError, ctx)
+        }
+    }
+```
+
+## 3、实现服务层createProducts函数
+
+`./src/service/products.service.js`
+
+```js
+const Products = require('../model/products.model')
+
+async createProducts(products) {
+        // 创建一个新用户
+        const res = await Products.create(products);
+        //console.log(res);
+        //写入数据库操作
+        return res.dataValues
+    }
+module.exports = new ProductsService()
+```
+
+## 4、建立数据模型同步数据库
+
+`./src/model/products.model.js`
+
+```js
+const { DataTypes } = require('sequelize')
+const seq = require('../db/seq')
+
+const Products = seq.define('products', {
+    products_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        commit: '商品名称'
+    },
+    products_price: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        commit: '商品价格'
+    },
+    products_num: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        commit: '商品库存'
+    },
+    products_img: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        commit: '商品图片的URL地址'
+    }
+})
+
+//Products.sync({ force: true })
+
+module.exports = Products
+```
+
+## 5、错误
+
+`./src/constant/error.type.js`
+
+```js
+publicProductsError: {
+        code: '10204',
+        message: '发布商品错误',
+        result: ''
+    }
+```
+
+# 二十、修改用户信息
+
+## 1、添加路由
+
+`./src/router/products.router.js`
+
+```js
+const { upload, create, update } = require('../controller/products.controller')
+
+router.put('/:id', auth, hadAdminPermission, validator, update)
+```
+
+## 2、控制层
+
+`./src/controller/products.controller.js
+
+```js
+async update(ctx) {
+        try {
+            const res = await updateProducts(ctx.params.id, ctx.request.body)
+            console.log(ctx.params)
+            if (res) {
+                ctx.body = {
+                    code: 0,
+                    message: '修改商品成功',
+                    result: ''
+                }
+            }
+            else {
+                return ctx.app.emit('error', invalidProductsIDError, ctx)
+            }
+        }
+        catch (error) {
+            console.error(error)
+            return ctx.app.emit('error', updateProductsError, ctx)
+        }
+    }
+```
+
+## 3、服务层
+
+`./src/service/products.service.js`
+
+```js
+async updateProducts(id, products) {
+        // 更新一个用户
+        const res = await Products.update(products, { where: { id } });
+        console.log(res[0]);
+        //写入数据库操作
+        return res[0] > 0 ? true : false
+    }
+```
+
+
+
+## 4、错误
+
+`./src/constant/error.type.js`
+
+```js
+publicProductsError: {
+        code: '10204',
+        message: '发布商品错误',
+        result: ''
+    }
+```
+
+# 21、硬删除商品信息
+
+## 1、添加路由
+
+`./src/router/products.router.js`
+
+```js
+//修改登录密码
+router.patch('/', auth, cryptPassword, changePassword)
+```
+
+## 2、控制层
+
+`./src/controller/products.controller.js`
+
+```js
+async remove(ctx) {
+        const res = await removeProducts(ctx.params.id)
+        //console.log(res)
+        ctx.body = {
+            code: 0,
+            message: '删除商品成功',
+            result: ''
+        }
+    }
+```
+
+## 3、服务层
+
+`./src/service/products.service.js`
+
+```js
+async removeProducts(id) {
+        const res = await Products.destroy({ where: { id } })
+        return res[0] > 0 ? true : false
+    }
+```
+

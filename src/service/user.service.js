@@ -36,7 +36,7 @@ class UserService {
         // 创建一个新用户
         const res = await User.update(newUser, { where: whereOpt })
         console.log(res.dataValues)
-        return res[0] > 0 ? true : false
+        return res[0] > 0
     }
 }
 module.exports = new UserService()
