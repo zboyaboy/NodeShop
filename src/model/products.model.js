@@ -26,6 +26,6 @@ const Products = seq.define('products', {
     paranoid: true
 })
 
-// Products.sync({ force: true })
+//Products.sync({ force: true })
 
 module.exports = Products

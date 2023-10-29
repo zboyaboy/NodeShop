@@ -8,6 +8,7 @@ const router = new Router({ prefix: '/users' })
 //GET /users/
 router.get('/', (ctx, next) => {
     ctx.body = 'hello users'
+    console.log('111')
 })
 
 //注册接口

@@ -20,7 +20,6 @@ const auth = async (ctx, next) => {
                 return ctx.app.emit('error', jsonWebTokenError, ctx)
                 break
         }
-
     }
     await next();
 }

@@ -31,18 +31,28 @@ class UserController {
         //1、获取数据
         const { username, password } = ctx.request.body
         //获取用户信息（在token的playload中，记录id，username，role）
+        console.log(ctx.request.body)
 
         try {
             //返回结果对象中，剔除password字段
             const { password, ...res } = await getUserInfo({ username })
             ctx.body = {
-                code: 0,
-                message: '用户登录成功',
-                result: {
-                    id: res.id,
-                    username: res.username,
-                    token: jwt.sign(res, JWT_SECRET, { expiresIn: '1d' })
-                }
+                // code: 0,
+                // message: '用户登录成功',
+                // result: {
+                //     id: res.id,
+                //     username: res.username,
+                //     token: jwt.sign(res, JWT_SECRET, { expiresIn: '1d' })
+                // }
+                code: "00000",
+                data: {
+                    accessToken: jwt.sign(res, JWT_SECRET, { expiresIn: '1d' }),
+                    //"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImp0aSI6IjE2YWJkNTlkOTAxNzQwZDliYmI3ZjczODBhZDkyNzNhIiwidXNlcklkIjoyLCJ1c2VybmFtZSI6ImFkbWluIiwiZGVwdElkIjoxLCJkYXRhU2NvcGUiOjEsImF1dGhvcml0aWVzIjpbIlJPTEVfQURNSU4iXSwiZXhwIjoxNjkxMTAzMzgyfQ.P4cuIfmPepl3HuguhMS7NXn5a7IUPpsLbmtA_rHOhHk",
+                    tokenType: "Bearer",
+                    refreshToken: null,
+                    expires: null,
+                },
+                msg: "一切ok",
             }
         } catch (err) {
             console.error('用户登录失败', err)

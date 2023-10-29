@@ -16,7 +16,8 @@ app.use(koaBody({
     formidable: {//在option里的相对路径，不是相对当前的路径。是相对于Process.cwd()的相对路径        
         uploadDir: path.join(__dirname, '../upload'),
         keepExtensions: true
-    }
+    },
+    parsedMethods: ['POST', 'PUT', 'PATCH', 'DELETE']
 }))
 app.use(koaStatic(path.join(__dirname, '../upload')))
 app.use(parameter(app))

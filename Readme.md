@@ -1,27 +1,27 @@
-# 一、项目的初始化
-##  1、npm初始化
+# 一.项目的初始化
+##  1.npm初始化
 ```shell
 npm init -y
 ```
 
 生成package.json
 
-## 2、git初始化
+## 2.git初始化
 ```shell
 git init
 git add .
 git commit -m '1-项目初始化'
 ```
 生成.git隐藏文件夹，新建'.gitignore'文件忽略本地仓库
-## 3、创建Readme文件
+## 3.创建Readme文件
 
 
-# 二、 搭建项目
-## 1、安装koa框架
+# 二. 搭建项目
+## 1.安装koa框架
 ```shell
 npm install koa
 ```
-## 2、编写最基本的app
+## 2.编写最基本的app
 ./src/app.js
 ```node
 const Koa = require('koa')
@@ -39,8 +39,8 @@ node ./src/app.js
 git提交代码
 git add .
 
-# 三、 项目的基本优化
-## 1、自动重新服务
+# 三. 项目的基本优化
+## 1.自动重新服务
 ```shell
 npm install nodemon
 ```
@@ -52,7 +52,7 @@ scripts段中添加
     "test": "echo \"Error: no test specified\" && exit 1"
   },
 ```
-## 2、全局变量存储Dotenv
+## 2.全局变量存储Dotenv
 ```shell
 npm install dotenv
 ```
@@ -85,16 +85,16 @@ app.listen(APP_PORT, () => {
     console.log('server is running on http://locahost:' + APP_PORT + '.')
 })
 ```
-# 四、添加路由
+# 四.添加路由
 路由：根据不同的URL，调用对应的处理函数。
 ```shell
 npm install @koa/router
 ```
 步骤：
-1、导入包
-2、实例化对象
-3、编写路由
-4、注册中间件
+1.导入包
+2.实例化对象
+3.编写路由
+4.注册中间件
 
 ```js
 const Koa = require('koa');
@@ -148,8 +148,8 @@ router.get('/', (ctx, next) => {
 module.exports = router
 ```
 
-# 五、目录结构优化
-## 1、 将HTTP服务和业务逻辑代码拆分
+# 五.目录结构优化
+## 1. 将HTTP服务和业务逻辑代码拆分
 
 新增./src/app/index.js
 ```js
@@ -170,7 +170,7 @@ app.listen(APP_PORT, () => {
     console.log('server is running on http://localhost:' + APP_PORT + '.')
 })
 ```
-## 2、路由和控制器拆分
+## 2.路由和控制器拆分
 路由：解析URL，分布给控制器对应的方法
 ./router/user.route.js
 ```js
@@ -207,12 +207,12 @@ class UserController {
 }
 module.exports = new UserController()
 ```
-# 六、解析body
-## 1、安装
+# 六.解析body
+## 1.安装
 ```shell
 npm install koa-body
 ```
-## 2、改写app
+## 2.改写app
 ./app/index.js
 ```js
 const Koa = require('koa');
@@ -226,7 +226,7 @@ app.use(koaBody())
 
 module.exports = app;
 ```
-## 3、获取请求数据
+## 3.获取请求数据
 ./controller/controller.js
 ```js
 class UserController {
@@ -241,7 +241,7 @@ class UserController {
 }
 module.exports = new UserController()
 ```
-## 4、拆分service层
+## 4.拆分service层
 ./service/user.service.js
 ```js
 class UserService {
@@ -266,39 +266,39 @@ class UserController {
     async register(ctx, next) {
         console.log('注册' + ctx.request.body)
         ctx.body = ctx.request.body
-        //1、获取数据
+        //1.获取数据
         const { username, password } = ctx.request.body
-        //2、操作数据库
+        //2.操作数据库
         const res = await createUser(username, password)
-        //3、返回结果
+        //3.返回结果
         console.log(res)
     }
     async login(ctx, next) {
         console.log('登录' + ctx.request.body)
         ctx.body = ctx.request.body
-        //1、获取数据
+        //1.获取数据
         const { username, password } = ctx.request.body
-        //2、操作数据库
+        //2.操作数据库
         const res = await loginUser(username, password)
-        //3、返回结果
+        //3.返回结果
         console.log(res)
     }
 }
 module.exports = new UserController()
 ```
 
-# 七、数据库操作
+# 七.数据库操作
 	  sequelize ORM数据库工具
 	  ORM：对象关系映射
 - 数据表映射	  
 - 数据表中的数据行（记录）对应一个对象
 - 数据表字段对应对象的属性
 - 数据表的操作对应对象的方法
-## 1、安装sequelize
+## 1.安装sequelize
 ```shell
 npm install sequelize
 ```
-## 2、安装mysql2
+## 2.安装mysql2
 ```shell
 npm install mysql2
 ```
@@ -321,7 +321,7 @@ sequelize.authenticate()
     })
 module.exports = sequelize
 ```
-## 3、使用环境变量
+## 3.使用环境变量
 ```
 APP_PORT = 8000
 MYSQL_HOST = localhost
@@ -332,8 +332,8 @@ MYSQL_DB = mydb
 ```
 
 
-# 八、创建User模型
-## 1、新建数据模型
+# 八.创建User模型
+## 1.新建数据模型
 `./model/user.model.js`
 ```js
 const { DataType, DataTypes } = require('sequelize')
@@ -365,19 +365,19 @@ const User = seq.define('user', {
 //User.sync({ force: true })
 module.exports = User
 ```
-# 九、添加用户入库
-## 1、通过控制器进行逻辑服务访问
+# 九.添加用户入库
+## 1.通过控制器进行逻辑服务访问
 `../controller/user.controller`
 ```js
 const { createUser, loginUser } = require('../service/user.service');
 
 class UserController {
     async register(ctx, next) {
-        //1、获取数据
+        //1.获取数据
         const { username, password } = ctx.request.body
-        //2、操作数据库
+        //2.操作数据库
         const res = await createUser(username, password)
-        //3、返回结果
+        //3.返回结果
         ctx.body = {
             code: 0,
             message: '用户注册成功',
@@ -391,17 +391,17 @@ class UserController {
     async login(ctx, next) {
         console.log('登录' + ctx.request.body)
         ctx.body = ctx.request.body
-        //1、获取数据
+        //1.获取数据
         const { username, password } = ctx.request.body
-        //2、操作数据库
+        //2.操作数据库
         const res = await loginUser(username, password)
-        //3、返回结果
+        //3.返回结果
         console.log(res)
     }
 }
 module.exports = new UserController()
 ```
-## 2、通过服务层对数据库进行访问操作
+## 2.通过服务层对数据库进行访问操作
 `../service/user.service`
 ```js
 const User = require('../model/user.model')
@@ -421,14 +421,14 @@ class UserService {
 }
 module.exports = new UserService()
 ```
-# 十、错误处理
-## 1、对用户注册逻辑进行校验
+# 十.错误处理
+## 1.对用户注册逻辑进行校验
 `../controller/user.controller.js`
 ```js
 const { createUser, loginUser, getUserInfo } = require('../service/user.service');
 
 async register(ctx, next) {
-	//1、获取数据
+	//1.获取数据
 	const { username, password } = ctx.request.body
 
 	//验证
@@ -453,9 +453,9 @@ async register(ctx, next) {
 		return
 	}
 
-	//2、操作数据库
+	//2.操作数据库
 	const res = await createUser(username, password)
-	//3、返回结果
+	//3.返回结果
 	ctx.body = {
 		code: 0,
 		message: '用户注册成功',
@@ -484,8 +484,8 @@ async getUserInfo({ id, username, password, role }) {
         return res ? (await res).dataValues : null
     }
 ```
-# 十一、拆分中间件
-## 1、新建中间件文件
+# 十一.拆分中间件
+## 1.新建中间件文件
 `./src/middleWare/user.middleware.js`
 ```js
 const { getUserInfo } = require('../service/user.service')
@@ -523,7 +523,7 @@ const { userValidator, verifyUser } = require('../middleware/user.middleware')
 //注册接口加入验证
 router.post('/register', userValidator, verifyUser, register)
 ```
-## 2、抽象错误信息层统一错误处理
+## 2.抽象错误信息层统一错误处理
 `./src/constant/error.type.js`
 ```js
 module.exports = {
@@ -540,7 +540,7 @@ module.exports = {
 
 }
 ```
-## 3、添加全局消息
+## 3.添加全局消息
 `./src/app/index.js`
 ```js
 const Koa = require('koa');
@@ -557,7 +557,7 @@ app.on('error', ErrorHandler)
 
 module.exports = app;
 ```
-## 4、错误消息处理函数
+## 4.错误消息处理函数
 `./src/app/errorHandler.js`
 ```js
 module.exports = (err, ctx) => {
@@ -576,7 +576,7 @@ module.exports = (err, ctx) => {
     ctx.body = err
 }
 ```
-## 5、emit触发异常
+## 5.emit触发异常
 `./src/controller/user.controller.js`
 ```js
 const { getUserInfo } = require('../service/user.service')
@@ -607,19 +607,19 @@ module.exports = {
     verifyUser
 }
 ```
-## 6、优化异常处理
+## 6.优化异常处理
 
-### 1）、添加异常捕获
+### 1）.添加异常捕获
 `./src/controller/user.controller.js`
 ```js
  async register(ctx, next) {
-        //1、获取数据
+        //1.获取数据
         const { username, password } = ctx.request.body
-        //2、操作数据库
+        //2.操作数据库
         //增加异常捕获
         try {
             const res = await createUser(username1, password)
-            //3、返回结果
+            //3.返回结果
             ctx.body = {
                 code: 0,
                 message: '用户注册成功',
@@ -636,7 +636,7 @@ module.exports = {
         }
     }
 ```
-### 2）、添加错误类型
+### 2）.添加错误类型
 `./src/constant/error.type.js`
 ```js
     userRegisterError: {
@@ -645,19 +645,19 @@ module.exports = {
         result: ''
     }
 ```
-### 3）、添加错误代码
+### 3）.添加错误代码
 `./src/app/errorHandler.js`
 ```js
 case '10003':
             status = 404
             break
 ```
-### 4）、添加引用
+### 4）.添加引用
 `./src/controller/user.controller.js`
 ```js
 const { userRegisterError } = require('../constant/error.type')
 ```
-### 5）、middleware添加异常处理
+### 5）.middleware添加异常处理
 `./src/middleware/user.middleware.js`
 ```js
 const verifyUser = async (ctx, next) => {
@@ -674,15 +674,15 @@ const verifyUser = async (ctx, next) => {
     await next();
 }
 ```
-# 十二、加密用户密码
+# 十二.加密用户密码
 将密码保存到数据库前，要对密码进行加密处理
 加盐加密（加盐可以理解为私钥）
 加密（salt+密码）= 密文
-## 1、安装组件
+## 1.安装组件
 ```shell
 npm install bcryptjs
 ```
-## 2、加密password字段
+## 2.加密password字段
 `./src/controllor/user.controllor.js`
 ```js
 const bcrypt = require('bcryptjs');
@@ -693,7 +693,7 @@ const hashPassword = bcrypt.hashSync(password, salt);
 //修改
 const res = await createUser(username, hashPassword)
 ```
-## 3、抽离为中间件，解耦register业务逻辑
+## 3.抽离为中间件，解耦register业务逻辑
 `./src/middleware/user.middleware.js`
 ```js
 const bcrypt = require('bcryptjs');
@@ -712,8 +712,8 @@ module.exports = {
     cryptPassword
 }
 ```
-# 十三、用户登录
-## 1、添加路由引用
+# 十三.用户登录
+## 1.添加路由引用
 `./src/router/user.router.js`
 ```js
 const { userValidator, verifyUser, cryptPassword, verifyLogin } = require('../middleware/user.middleware')
@@ -721,7 +721,7 @@ const { userValidator, verifyUser, cryptPassword, verifyLogin } = require('../mi
 //登录接口
 router.post('/login', userValidator, verifyLogin, login)
 ```
-## 2、添加中间件处理函数
+## 2.添加中间件处理函数
 `./src/middleware/user.middleware.js`
 ```js
 const verifyLogin = async (ctx, next) => {
@@ -749,7 +749,7 @@ const verifyLogin = async (ctx, next) => {
     await next();
 }
 ```
-## 3、注册错误类型
+## 3.注册错误类型
 `./src/constant/error.type.js`
 ```js
     userDoesNotExisted: {
@@ -764,7 +764,7 @@ const verifyLogin = async (ctx, next) => {
     },
 ```
 
-# 十四、用户的认证
+# 十四.用户的认证
 
 用户登录成功以后，给用户颁发一个令牌(token)，所有后端页面的访问都需要有令牌的验证。
 
@@ -774,13 +774,13 @@ jwt:jsonwebtoken
 - playload:载荷
 - signature:签名
 
-## 1、安装JWT
+## 1.安装JWT
 
 ```she
 npm install jsonwebtoken
 ```
 
-## 2、登录逻辑代码
+## 2.登录逻辑代码
 
 `./src/controllor/user.controllor.js`
 
@@ -789,7 +789,7 @@ var jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config/config.default');
 
 async login(ctx, next) {
-        //1、获取数据
+        //1.获取数据
         const { username, password } = ctx.request.body
         //获取用户信息（在token的playload中，记录id，username，role）
 
@@ -818,9 +818,9 @@ async login(ctx, next) {
 JWT_SECRET = aaaa
 ```
 
-# 十五、用户认证校验
+# 十五.用户认证校验
 
-## 1、Postman 数据模拟认证请求
+## 1.Postman 数据模拟认证请求
 
 `用户登录Test页面中`
 
@@ -841,7 +841,7 @@ type Bearer Token
 
 `variables中查看田间的token变量`
 
-## 2、添加用户认证校验
+## 2.添加用户认证校验
 
 `./src/middleware/user.middleware.js`
 
@@ -874,7 +874,7 @@ const auth = async (ctx, next) => {
 }
 ```
 
-## 3、添加错误类型
+## 3.添加错误类型
 
 `./src/constant/error.type.js`
 
@@ -891,9 +891,9 @@ const auth = async (ctx, next) => {
     }
 ```
 
-# 十六、修改密码
+# 十六.修改密码
 
-## 1、添加修改密码路由
+## 1.添加修改密码路由
 
 `./src/router/user.router.js`
 
@@ -905,7 +905,7 @@ router.patch('/', auth, (ctx, next) => {
 })
 ```
 
-## 2、加密passowrd字段
+## 2.加密passowrd字段
 
 `./src/router/user.router.js`
 
@@ -917,7 +917,7 @@ router.patch('/', auth,cryptPassword, (ctx, next) => {
 })
 ```
 
-## 3、修改路由文件
+## 3.修改路由文件
 
 `./src/router/user.router.js`
 
@@ -928,22 +928,22 @@ const { register, login, changePassword } = require('../controller/user.controll
 router.patch('/', auth, cryptPassword, changePassword)
 ```
 
-## 4、修改控制器
+## 4.修改控制器
 
 `./src/controllor/user.controllor.js`
 
 ```js
 async changePassword(ctx, next) {
-        //1、获取数据
+        //1.获取数据
         const id = ctx.state.user.id
         const password = ctx.request.body.password
 
         console.log(id, password)
-        //2、操作数据库
+        //2.操作数据库
         //增加异常捕获
         try {
             if (await updateById({ id, password })) {
-                //3、返回结果
+                //3.返回结果
                 ctx.body = {
                     code: 1,
                     message: '用户密码修改成功',
@@ -951,7 +951,7 @@ async changePassword(ctx, next) {
                     }
                 }
             } else {
-                //3、返回结果
+                //3.返回结果
                 ctx.body = {
                     code: 0,
                     message: '用户密码修改失败',
@@ -967,7 +967,7 @@ async changePassword(ctx, next) {
     }
 ```
 
-## 5、更新数据库
+## 5.更新数据库
 
 `./scr/service/user.service.js`
 
@@ -986,9 +986,9 @@ async updateById({ id, username, password, role }) {
     }
 ```
 
-# 十七、添加商品模块
+# 十七.添加商品模块
 
-## 1、新建商品路由
+## 1.新建商品路由
 
 `./src/router/products.route.js`
 
@@ -1001,7 +1001,7 @@ const router = new Router({ prefix: '/products' })
 router.post('/upload', upload)
 ```
 
-## 2、添加控制器
+## 2.添加控制器
 
 `./src/router/products.controller.js`
 
@@ -1017,7 +1017,7 @@ class ProductsController {
 module.exports = new ProductsController()
 ```
 
-## 3、引入路由
+## 3.引入路由
 
 `./src/router/products.route.js`
 
@@ -1046,7 +1046,7 @@ app.use(koaBody())
     .use(userRouter.allowedMethods());
 ```
 
-## 4、自动加载路由文件
+## 4.自动加载路由文件
 
 `./src/router/index.js`
 
@@ -1077,7 +1077,7 @@ app.use(koaBody())
     .use(router.allowedMethods());
 ```
 
-## 5、判断用户是否具有管理员权限
+## 5.判断用户是否具有管理员权限
 
 `./src/middleware/user.middleware.js`
 
@@ -1119,7 +1119,7 @@ const { auth, hadAdminPermission } = require('../middleware/user.middleware')
 router.post('/upload', auth, hadAdminPermission, upload)
 ```
 
-## 6、分离auth中间件
+## 6.分离auth中间件
 
 `./src/middleware/auth.middleware.js`
 
@@ -1178,7 +1178,7 @@ const { auth } = require('../middleware/auth.middleware')
 const { auth, hadAdminPermission } = require('../middleware/auth.middleware')
 ```
 
-## 7、添加上传逻辑
+## 7.添加上传逻辑
 
 `./src/app/index.js`
 
@@ -1236,7 +1236,7 @@ fileUploadError: {
     }
 ```
 
-## 8、添加图片静态回显
+## 8.添加图片静态回显
 
 ```shell
 npm i koa-static
@@ -1250,7 +1250,7 @@ const koaStatic = require('koa-static')
 app.use(koaStatic(path.join(__dirname, '../upload')))
 ```
 
-## 9、上传文件类型过滤
+## 9.上传文件类型过滤
 
 `./src/controllor/products.controllor.js`
 
@@ -1273,15 +1273,15 @@ unSupportedFileType: {
     }
 ```
 
-# 十八、校验中间件
+# 十八.校验中间件
 
-## 1、安装
+## 1.安装
 
 ```shell
 npm install koa-parameter
 ```
 
-## 2、引用组件
+## 2.引用组件
 
 `./src/app/index.js`
 
@@ -1291,7 +1291,7 @@ const parameter = require('koa-parameter');
 app.use(parameter(app))
 ```
 
-## 3、调用验证
+## 3.调用验证
 
 `./src/middleware/products.middleware.js`
 
@@ -1327,9 +1327,9 @@ module.exports = { validator }
     }
 ```
 
-# 十九、发布商品信息
+# 十九.发布商品信息
 
-## 1、路由中间件
+## 1.路由中间件
 
 `./src/router/products.router.js`
 
@@ -1337,7 +1337,7 @@ module.exports = { validator }
 router.post('/', auth, hadAdminPermission, validator, create)
 ```
 
-## 2、实现控制器create函数
+## 2.实现控制器create函数
 
 `./src/controller/products.controller.js`
 
@@ -1359,7 +1359,7 @@ async create(ctx) {
     }
 ```
 
-## 3、实现服务层createProducts函数
+## 3.实现服务层createProducts函数
 
 `./src/service/products.service.js`
 
@@ -1376,7 +1376,7 @@ async createProducts(products) {
 module.exports = new ProductsService()
 ```
 
-## 4、建立数据模型同步数据库
+## 4.建立数据模型同步数据库
 
 `./src/model/products.model.js`
 
@@ -1412,7 +1412,7 @@ const Products = seq.define('products', {
 module.exports = Products
 ```
 
-## 5、错误
+## 5.错误
 
 `./src/constant/error.type.js`
 
@@ -1424,9 +1424,9 @@ publicProductsError: {
     }
 ```
 
-# 二十、修改用户信息
+# 二十.修改用户信息
 
-## 1、添加路由
+## 1.添加路由
 
 `./src/router/products.router.js`
 
@@ -1436,7 +1436,7 @@ const { upload, create, update } = require('../controller/products.controller')
 router.put('/:id', auth, hadAdminPermission, validator, update)
 ```
 
-## 2、控制层
+## 2.控制层
 
 `./src/controller/products.controller.js
 
@@ -1463,7 +1463,7 @@ async update(ctx) {
     }
 ```
 
-## 3、服务层
+## 3.服务层
 
 `./src/service/products.service.js`
 
@@ -1479,7 +1479,7 @@ async updateProducts(id, products) {
 
 
 
-## 4、错误
+## 4.错误
 
 `./src/constant/error.type.js`
 
@@ -1491,9 +1491,9 @@ publicProductsError: {
     }
 ```
 
-# 21、硬删除商品信息
+# 21.硬删除商品信息
 
-## 1、添加路由
+## 1.添加路由
 
 `./src/router/products.router.js`
 
@@ -1502,7 +1502,7 @@ publicProductsError: {
 router.patch('/', auth, cryptPassword, changePassword)
 ```
 
-## 2、控制层
+## 2.控制层
 
 `./src/controller/products.controller.js`
 
@@ -1518,7 +1518,7 @@ async remove(ctx) {
     }
 ```
 
-## 3、服务层
+## 3.服务层
 
 `./src/service/products.service.js`
 
@@ -1529,9 +1529,9 @@ async removeProducts(id) {
     }
 ```
 
-# 22、标记删除商品信息
+# 22.标记删除商品信息
 
-## 1、添加路由
+## 1.添加路由
 
 `./src/router/products.router.js`
 
@@ -1543,7 +1543,7 @@ router.post('/:id/off', auth, hadAdminPermission, paranoid)
 router.post('/:id/on', auth, hadAdminPermission, unparanoid)
 ```
 
-## 2、控制层
+## 2.控制层
 
 `./src/controller/products.controller.js`
 
@@ -1576,7 +1576,7 @@ async paranoid(ctx) {
     }
 ```
 
-## 3、服务层
+## 3.服务层
 
 `./src/service/products.service.js`
 
@@ -1593,9 +1593,9 @@ async paranoidProducts(id) {
     }
 ```
 
-# 23、获取商品列表信息
+# 23.获取商品列表信息
 
-## 1、添加路由
+## 1.添加路由
 
 `./src/router/products.router.js`
 
@@ -1604,7 +1604,7 @@ async paranoidProducts(id) {
 router.get('/', findAll)
 ```
 
-## 2、控制层
+## 2.控制层
 
 `./src/controller/products.controller.js`
 
@@ -1623,7 +1623,7 @@ router.get('/', findAll)
     }
 ```
 
-## 3、服务层
+## 3.服务层
 
 `./src/service/products.service.js`
 
@@ -1638,7 +1638,7 @@ router.get('/', findAll)
     }
 ```
 
-## 4、服务层代码优化
+## 4.服务层代码优化
 
 ```js
     async findProducts(PageNum, PageSize) {
@@ -1656,6 +1656,588 @@ router.get('/', findAll)
             total: count,
             result: rows
         }
+    }
+```
+
+# 24.购物车
+
+## 1.添加路由
+
+`./src/router/cart.route.js`
+
+```js
+//1.导入Kor-router
+const Router = require('@koa/router')
+//2.实例化router对象
+const router = new Router({ prefix: '/carts' })
+const { auth } = require('../middleware/auth.middleware')
+const { validator } = require('../middleware/cart.middleware')
+
+//3.编写路由规则
+router.post('/', auth, validator, (ctx) => {
+    console.log(ctx.state.user)
+    ctx.body = '加入购物车成功'
+})
+//4.导出router对象
+module.exports = router
+```
+
+## 2.添加验证中间件
+
+`./src/middleware/cart.middleware.js`
+
+```js
+const { invalidProductsIDError } = require('../constant/error.type')
+
+const validator = async (ctx, next) => {
+    try {
+        ctx.verifyParams({
+            products_id: 'number'//简写
+        })
+    } catch (error) {
+        console.error(error)
+        invalidProductsIDError.result = error
+        return ctx.app.emit('error', invalidProductsIDError, ctx)
+    }
+    await next()
+}
+
+module.exports = { validator }
+```
+
+## 3.路由文件中添加控制器引用
+
+`./src/router/cart.route.js`
+
+```js
+//3.编写路由规则
+router.post('/', auth, validator, add)
+```
+
+## 4.添加控制器
+
+`./src/controller/cart.controller.js`
+
+```js
+const { createOrUpdate } = require('../service/cart.service')
+class CartController {
+    async add(ctx) {
+        //将商品添加到购物车
+        //1、解析user_id，products_id。
+        const user_id = ctx.state.user.id
+        const products_id = ctx.request.body.products_id
+        //2、操作数据库
+        const res = await createOrUpdate(user_id, products_id)
+        //3、返回结果
+        ctx.body = {
+            code: 0,
+            message: '添加购物车成功',
+            result: res,
+        }
+    }
+}
+module.exports = new CartController()
+```
+
+## 5.添加服务层
+
+`./src/service/cart.service.js`
+
+```js
+const Cart = require('../model/cart.model')
+const { Op } = require('sequelize')
+
+class CartService {
+    async createOrUpdate(user_id, products_id) {
+        //根据user_id 和 products_id同时查找是否有记录
+        let res = await Cart.findOne({
+            where: {
+                [Op.and]: {
+                    user_id,
+                    products_id
+                }
+            }
+        })
+        if (res) {
+            //已经存在一条记录
+            await res.increment('number', { by: 1 })
+            return await res.reload()
+        }
+        else {
+            return await Cart.create({ user_id, products_id })
+        }
+    }
+}
+module.exports = new CartService
+```
+
+## 6.添加Cart模型
+
+`./src/model/cart.model.js`
+
+```js
+//1.导入sequelize的连接
+const { DataTypes } = require('sequelize')
+const seq = require('../db/seq')
+//2.定义Cart模型
+const Cart = seq.define('carts', {
+    products_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        comment: '商品的ID'
+    },
+    user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        comment: '用户的ID'
+    },
+    number: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        comment: '用户的ID'
+    },
+    selected: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+        comment: '是否选中'
+    }
+})
+
+//3.同步数据
+//Cart.sync({ force: true })
+//4.导出Cart模型
+module.exports = Cart
+```
+
+# 25.获取购物车列表
+
+## 1.相关知识
+
+## `外键`
+
+user表
+
+id	name	age
+
+其中id为user表的主键
+
+
+
+class表
+
+id	userid	classname
+
+其中userid是user表的外键
+
+## `Sequelize 关联`
+
+```js
+const A = sequelize.define('A', /* ... */);
+const B = sequelize.define('B', /* ... */);
+
+A.hasOne(B); // A 有一个 B
+A.belongsTo(B); // A 属于 B
+A.hasMany(B); // A 有多个 B
+A.belongsToMany(B, { through: 'C' }); // A 属于多个 B , 通过联结表 C
+```
+
+关联的定义顺序是有关系的. 换句话说,对于这四种情况,定义顺序很重要. 在上述所有示例中,`A` 称为 **源** 模型,而 `B` 称为 **目标** 模型. 此术语很重要.
+
+`A.hasOne(B)` 关联意味着 `A` 和 `B` 之间存在一对一的关系,外键在目标模型(`B`)中定义.
+
+`A.belongsTo(B)`关联意味着 `A` 和 `B` 之间存在一对一的关系,外键在源模型中定义(`A`).
+
+`A.hasMany(B)` 关联意味着 `A` 和 `B` 之间存在一对多关系,外键在目标模型(`B`)中定义.
+
+这三个调用将导致 Sequelize 自动将外键添加到适当的模型中(除非它们已经存在).
+
+`A.belongsToMany(B, { through: 'C' })` 关联意味着将表 `C` 用作[联结表](https://en.wikipedia.org/wiki/Associative_entity),在 `A` 和 `B` 之间存在多对多关系. 具有外键(例如,`aId` 和 `bId`). Sequelize 将自动创建此模型 `C`(除非已经存在),并在其上定义适当的外键.
+
+*注意：在上面的 `belongsToMany` 示例中,字符串(`'C'`)被传递给 `through` 参数. 在这种情况下,Sequelize 会自动使用该名称生成模型. 但是,如果已经定义了模型,也可以直接传递模型.*
+
+这些是每种关联类型中涉及的主要思想. 但是,这些关系通常成对使用,以便 Sequelize 更好地使用. 这将在后文中看到.
+
+[关联 | Sequelize中文文档 | Sequelize中文网](https://www.sequelize.cn/core-concepts/assocs)
+
+主表调用
+
+例如: class.belongsTo(user)
+
+相反:	user.hasOne(class)
+
+## 2.添加路由
+
+`./src/router/cart.route.js`
+
+```js
+//3.2获取购物车列表
+router.get('/', auth, findAll)
+```
+
+## 3.添加控制器
+
+`./src/controller/cart.controller.js`
+
+```js
+async findAll(ctx) {
+        //1.解析请求参数
+        const { pageNum = 1, pageSize = 10 } = ctx.request.query
+        //2.操作数据库
+        const res = await findCarts(pageNum, pageSize)
+        //3.返回结果
+        ctx.body = {
+            code: 0,
+            message: '获取购物车列表成功',
+            result: res,
+        }
+    }
+```
+
+## 4.添加服务层
+
+`./src/service/cart.service.js`
+
+```js
+async findCarts(pageNum, pageSize) {
+        const offset = (pageNum - 1) * pageSize
+        const { count, rows } = await Cart.findAndCountAll({
+            attributes: ['id', 'number', 'selected'],
+            offset: offset,
+            limit: pageSize * 1
+        })
+        return {
+            pageNum,
+            pageSize,
+            total: count,
+            result: rows
+        }
+    }
+```
+
+## 5.联合查询
+
+`./src/model/cart.model.js`
+
+`外键在cart内,所以使用belongsTo进行外键关联
+
+相反使用hasone进行关联
+
+`./src/model/cart.model.js
+
+```js
+Cart.belongsTo(Products, {
+    foreignKey: 'products_id'
+})
+```
+
+`./src/service/cart.service.js`
+
+```js
+ async findCarts(pageNum, pageSize) {
+        const offset = (pageNum - 1) * pageSize
+        const { count, rows } = await Cart.findAndCountAll({
+            attributes: ['id', 'number', 'selected'],
+            offset: offset,
+            limit: pageSize * 1,
+            include: Products
+        })
+        return {
+            pageNum,
+            pageSize,
+            total: count,
+            result: rows
+        }
+    }
+```
+
+`product字段别名`
+
+`./src/model/cart.model.js`
+
+```js
+Cart.belongsTo(Products, {
+    foreignKey: 'products_id',
+    as: 'products_info'
+})
+```
+
+`./src/service/cart.service.js`
+
+```js
+include: {
+    model: Products,
+    as: 'products_info',
+    attributes: ['id', 'products_name', 'products_price', 'products_img']
+}
+```
+
+# 26.更新购物车
+
+### 1.`更新中间件错误验证函数`
+
+`./src/middleware/cart.middleware.js`
+
+```js
+const { cartFormatError } = require('../constant/error.type')
+
+const validator = (rules) => {
+    return async (ctx, next) => {
+        try {
+            ctx.verifyParams(rules)
+        } catch (error) {
+            console.error(error)
+            cartFormatError.result = error
+            return ctx.app.emit('error', cartFormatError, ctx)
+        }
+        await next()
+    }
+}
+module.exports = { validator }
+```
+
+`./src/router/route.js`
+
+```js
+//3.1添加购物车
+router.post('/', auth, validator({ products_id: 'number' }), add)
+
+//3.3更新购物车
+router.patch('/:id', auth, validator({
+    number: { type: 'number', required: false },
+    selected: { type: 'bool', required: false },
+}))
+```
+
+`./src/constant/error.type.js`
+
+```js
+  cartFormatError: {
+        code: '10301',
+        message: '购物车数据格式错误',
+        result: ''
+    }
+```
+
+## 2.添加更新方法
+
+`./src/router/route.js`
+
+```js
+//3.1添加购物车
+router.post('/', auth, validator({ products_id: 'number' }), add)
+
+//3.3更新购物车
+router.patch('/:id', auth, update)
+```
+
+## 3.添加控制器
+
+`./src/controller/cart.controller.js`
+
+```js
+    async update(ctx) {
+        //1.解析参数
+        const { id } = ctx.request.params// url中的参数
+        const { number, selected } = ctx.request.body//post信息中的参数
+        if (number === undefined && selected === undefined) {
+            cartFormatError.message = 'number和selected不能同时为空'
+            return ctx.app.emit('error', cartFormatError, ctx)
+        }
+        //2.操作数据库
+        const res = await updateCarts({ id, number, selected })
+        //3.返回数据
+        ctx.body = {
+            code: 0,
+            message: '更新购物车成功',
+            result: res
+        }
+    }
+```
+
+## 4.添加服务层
+
+`./src/service/cart.service.sj`
+
+```js
+    async updateCarts(params) {
+        const { id, number, selected } = params
+        const res = await Cart.findByPk(id)
+        if (!res) return ''
+        number !== undefined ? (res.number = number) : ''
+        if (selected !== undefined) {
+            res.selected = selected
+        }
+        return await res.save()
+    }
+```
+
+# 27.删除选定的购物车
+
+## 1.添加路由
+
+`./src/router/cart.route.js`
+
+```js
+//3.4删除购物车
+router.delete('/', auth, validator({
+    ids: { type: 'array' }
+}))
+```
+
+
+
+## 2.修改body挂载项(处理异常"params": {})
+
+`./scr/app/index.js`
+
+```js
+app.use(koaBody({
+    multipart: true,
+    formidable: {//在option里的相对路径，不是相对当前的路径。是相对于Process.cwd()的相对路径        
+        uploadDir: path.join(__dirname, '../upload'),
+        keepExtensions: true
+    },
+    parsedMethods: ['POST', 'PUT', 'PATCH', 'DELETE']
+}))
+```
+
+## 3.控制器
+
+`./src/controller/cart.controller.js`
+
+```js
+async remove(ctx) {
+        const { ids } = ctx.request.body
+        const res = await removeCarts(ids)
+        ctx.body = {
+            code: 0,
+            message: '删除购物车成功',
+            result: res,
+        }
+    }
+```
+
+## 4.服务层
+
+`./src/services/cart.services.js`
+
+```js
+async removeCarts(ids) {
+        return await Cart.destroy({
+            where: {
+                id: {
+                    [Op.in]: ids,
+                }
+            }
+        })
+    }
+```
+
+# 28.全选与全不选
+
+## 1.添加路由
+
+`./src/router/cart.route.js`
+
+```js
+//3.5全选
+router.post('/selectAll', auth, selectAll)
+
+//3.6全不选
+router.post('/unselectAll', auth, unselectAll)
+```
+
+## 2.添加控制器
+
+`./src/controller/cart.controller.js`
+
+```js
+async selectAll(ctx) {
+        const user_id = ctx.state.user.id
+        const res = await selectAllCasts(user_id)
+        ctx.body = {
+            code: 0,
+            message: '全选成功',
+            result: res,
+        }
+    }
+    async unselectAll(ctx) {
+        const user_id = ctx.state.user.id
+        const res = await unselectAllCasts(user_id)
+        ctx.body = {
+            code: 0,
+            message: '取消全选成功',
+            result: res,
+        }
+    }
+```
+
+## 3.添加服务层
+
+`./src/service/cart.service.js`
+
+```js
+async selectAllCasts(user_id) {
+        return await Cart.update(
+            { selected: true },
+            {
+                where: {
+                    user_id
+                }
+            }
+        )
+    }
+    async unselectAllCasts(user_id) {
+        return await Cart.update(
+            { selected: false },
+            {
+                where: {
+                    user_id
+                }
+            }
+        )
+    }
+```
+
+## 4.获取购物车总数
+
+`./src/router/cart.route.js`
+
+```js
+//3.7获取商品总数量接口
+router.get('/total', auth, getTotal)
+```
+
+## 5.添加控制器
+
+`./src/controller/cart.controller.js`
+
+```js
+    async getTotal(ctx) {
+        console.log('111')
+        const user_id = ctx.state.user.id
+        const res = await getTotalCast(user_id)
+        console.log(user_id)
+        ctx.body = {
+            code: 0,
+            message: '获取购物车总数成功',
+            result: res,
+        }
+    }
+```
+
+## 6.添加服务层
+
+`./src/service/cart.services.js`
+
+```js
+async getTotalCast(user_id) {
+        const { count } = await Cart.findAndCountAll(
+            { user_id }
+        )
+        return count
     }
 ```
 
