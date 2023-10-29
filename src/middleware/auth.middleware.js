@@ -9,6 +9,7 @@ const auth = async (ctx, next) => {
         const decoded = jwt.verify(token, JWT_SECRET);
         ctx.state.user = decoded
     }
+
     catch (err) {
         switch (err.name) {
             case 'TokenExpiredError':
